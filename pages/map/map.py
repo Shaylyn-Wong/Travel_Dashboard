@@ -91,4 +91,8 @@ def on_change(state, var_name, var_value):
     elif var_name == 'countries_selected':
         state.total_ips = state.country_ip_data['IP_Count'].sum()
 
+# Convert dataframes to HTML for display
+country_ip_html = country_ip_data.to_html(index=False, classes='table table-striped', border=0)
+daily_country_html = daily_country_data.to_html(index=False, classes='table table-striped', border=0)
+
 map_md = Markdown("pages/map/map.md")
