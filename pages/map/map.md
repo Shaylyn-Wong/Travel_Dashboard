@@ -1,10 +1,8 @@
-# Covid Dashboard - **Map**{: .color-primary} Statistics
-
-You can select clusters and countries in the two maps below. These will give you information on these clusters and countries. 
+# Taipy Dashboard - **Map**{: .color-primary} Statistics
 
 <|layout|columns=1 1|columns[mobile]=1|
 <|
-### Covid Clusters
+### IP Clusters
 ##### Total Deaths: <|{to_text(sum_deaths)}|text|raw|>
 <|chart|figure={cluster_map}|height=700px|selected={cluster_selected}|>
 |>
