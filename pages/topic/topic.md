@@ -10,6 +10,7 @@ This page provides a view of the tourists' interests, with statistics on the num
 
 <br/>
 
+<|part|render={selected_topic == 'All'}|
 <|layout|columns=2 2 2 2 2 1|gap=25px|columns[mobile]=1|
 <|card|
 **Attractions**{: .color-primary}
@@ -26,6 +27,80 @@ This page provides a view of the tourists' interests, with statistics on the num
 <|{to_text(data_topic_date.iloc[-1]['Shopping'] if 'Shopping' in data_topic_date.columns else 0)}|text|class_name=h3|>
 |>
 |>
+|>
+
+<|part|render={selected_topic == 'Attractions'}|
+<|layout|columns=2 2 2 2|gap=25px|columns[mobile]=1|
+<|card|
+**Indoor Attractions**{: .color-primary}
+<|{to_text(data_topic_date.iloc[-1]['Indoor Attractions'] if 'Indoor Attractions' in data_topic_date.columns else 0)}|text|class_name=h3|>
+|>
+
+<|card|
+**Outdoor Attractions**{: .color-primary}
+<|{to_text(data_topic_date.iloc[-1]['Outdoor Attractions'] if 'Outdoor Attractions' in data_topic_date.columns else 0)}|text|class_name=h3|>
+|>
+
+<|card|
+**Seasonal/Events-Based Attractions**{: .color-primary}
+<|{to_text(data_topic_date.iloc[-1]['Seasonal/Events-Based Attractions'] if 'Seasonal/Events-Based Attractions' in data_topic_date.columns else 0)}|text|class_name=h3|>
+|>
+
+<|card|
+**Family-Friendly Attractions**{: .color-primary}
+<|{to_text(data_topic_date.iloc[-1]['Family-Friendly Attractions'] if 'Family-Friendly Attractions' in data_topic_date.columns else 0)}|text|class_name=h3|>
+|>
+|>
+|>
+
+<|part|render={selected_topic == 'Dining'}|
+<|layout|columns=2 2 2 2|gap=25px|columns[mobile]=1|
+<|card|
+**Local Cuisine**{: .color-primary}
+<|{to_text(data_topic_date.iloc[-1]['Local Cuisine'] if 'Local Cuisine' in data_topic_date.columns else 0)}|text|class_name=h3|>
+|>
+
+<|card|
+**International Cuisine**{: .color-primary}
+<|{to_text(data_topic_date.iloc[-1]['International Cuisine'] if 'International Cuisine' in data_topic_date.columns else 0)}|text|class_name=h3|>
+|>
+
+<|card|
+**Fine Dining**{: .color-primary}
+<|{to_text(data_topic_date.iloc[-1]['Fine Dining'] if 'Fine Dining' in data_topic_date.columns else 0)}|text|class_name=h3|>
+|>
+
+<|card|
+**Street Food**{: .color-primary}
+<|{to_text(data_topic_date.iloc[-1]['Street Food'] if 'Street Food' in data_topic_date.columns else 0)}|text|class_name=h3|>
+|>
+|>
+|>
+
+<|part|render={selected_topic == 'Shopping'}|
+<|layout|columns=2 2 2 2|gap=25px|columns[mobile]=1|
+<|card|
+**Luxury Goods**{: .color-primary}
+<|{to_text(data_topic_date.iloc[-1]['Luxury Goods'] if 'Luxury Goods' in data_topic_date.columns else 0)}|text|class_name=h3|>
+|>
+
+<|card|
+**Local Products**{: .color-primary}
+<|{to_text(data_topic_date.iloc[-1]['Local Products'] if 'Local Products' in data_topic_date.columns else 0)}|text|class_name=h3|>
+|>
+
+<|card|
+**Electronics**{: .color-primary}
+<|{to_text(data_topic_date.iloc[-1]['Electronics'] if 'Electronics' in data_topic_date.columns else 0)}|text|class_name=h3|>
+|>
+
+<|card|
+**Fashion**{: .color-primary}
+<|{to_text(data_topic_date.iloc[-1]['Fashion'] if 'Fashion' in data_topic_date.columns else 0)}|text|class_name=h3|>
+|>
+|>
+|>
+
 <br/>
 
 <|part|render={selected_topic == 'All'}|
