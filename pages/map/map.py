@@ -7,26 +7,35 @@ from data.data import data, geojson, origin
 
 
 def initialize_map(data):
-    data['Province/State'] = data['Province/State'].fillna(data["Country/Region"])
+    print("Available columns:", data.columns)
+    
+    if 'Province/State' not in data.columns:
+        data['Province/State'] = data["Country/Region"]
+    else:
+        data['Province/State'] = data['Province/State'].fillna(data["Country/Region"])
+    
+    required_columns = ["Country/Region", 'Province/State', 'Longitude', 'Latitude', 'Deaths']
+    missing_columns = [col for col in required_columns if col not in data.columns]
+    
+    if missing_columns:
+        print(f"Error: Missing columns: {missing_columns}")
+        return None
+    
     data_province = data.groupby(["Country/Region",
                                   'Province/State',
                                   'Longitude',
                                   'Latitude'])\
                          .max()
                          
-
     data_province_displayed = data_province[data_province['Deaths']>10].reset_index()
-
-    # Size when using Taipy charts
-    # data_province_displayed['Size'] = np.sqrt(data_province_displayed.loc[:,'Deaths']/data_province_displayed.loc[:,'Deaths'].max())*80 + 3
-    # data_province_displayed['Text'] = data_province_displayed.loc[:,'Deaths'].astype(str) + ' deaths </br> ' + data_province_displayed.loc[:,'Province/State']
 
     # Size when using Plotly Python
     data_province_displayed['Size'] = ((data_province_displayed.loc[:,'Deaths']/data_province_displayed.loc[:,'Deaths'].max()) * 100) + 0.1
     return data_province_displayed
 
-
 data_province_displayed = initialize_map(data)
+if data_province_displayed is None:
+    print("Failed to initialize map data. Please check the data structure.")
 
 sum_deaths = data_province_displayed['Deaths'].sum()
 cluster_selected = [] 
