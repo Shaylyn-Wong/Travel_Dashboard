@@ -68,6 +68,7 @@ print("Initial data_topic_date:\n", data_topic_date)
 print("Data for chart_config:\n", data_topic_date)
 chart_config = generate_chart_config(data_topic_date, y_values, layout, options)
 print("Generated chart_config:\n", chart_config)
+print("Initial data_topic_date:\n", data_topic_date)
 print("Generated chart_config:\n", chart_config)
 pie_chart = create_pie_chart(data)
 
@@ -78,6 +79,8 @@ def on_change_topic(state):
     print("Chosen topic: ", state.selected_topic)
     state.data_topic_date, _ = initialize_case_evolution(data, state.selected_topic)
     print("Updated data_topic_date:\n", state.data_topic_date)
+    state.chart_config = generate_chart_config(state.data_topic_date, y_values, layout, options)
+    print("Updated chart_config:\n", state.chart_config)
     state.pie_chart = create_pie_chart(data, state.selected_topic)
 
 topic_md = Markdown("pages/topic/topic.md")
