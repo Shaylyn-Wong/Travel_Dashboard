@@ -73,7 +73,7 @@ selector_topic = ['All'] + list(np.sort(data['Topic'].astype(str).unique()))
 
 def on_change_topic(state):
     print("Chosen topic: ", state.selected_topic)
-    state.data_topic_date = initialize_case_evolution(data, state.selected_topic)
+    state.data_topic_date, _ = initialize_case_evolution(data, state.selected_topic)
     state.pie_chart = create_pie_chart(data, state.selected_topic)
 
 topic_md = Markdown("pages/topic/topic.md")
