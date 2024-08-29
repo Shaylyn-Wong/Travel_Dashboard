@@ -29,7 +29,9 @@ This page provides a view of the tourists' interests, with statistics on the num
 
 <br/>
 
-<|{chart_config}|raw|>
+<|layout|columns=2 1|columns[mobile]=1|
+<|{chart_config}|>
+|>
 
 <|{pie_chart}|chart|type=pie|values=values|labels=labels|title=Distribution Among Activities|>
 
