@@ -4,25 +4,36 @@ import pandas as pd
 from taipy.gui import Markdown
 import plotly.express as px
 import plotly.graph_objects as go
+import pycountry
 
 from data.data import geojson, origin
+
+# Function to convert country name to ISO 3166-1 alpha-3 code
+def country_name_to_code(name):
+    try:
+        return pycountry.countries.search_fuzzy(name)[0].alpha_3
+    except:
+        return None
 
 # Process origin data
 def process_origin_data(origin):
     # Ensure 'date' column is datetime
     origin['date'] = pd.to_datetime(origin['date'])
     
+    # Convert country names to ISO 3166-1 alpha-3 codes
+    origin['country_code'] = origin['country'].apply(country_name_to_code)
+    
     # Total counts per country
-    country_ip_counts = origin.groupby('country').size().reset_index(name='IP_Count')
+    country_ip_counts = origin.groupby('country_code').size().reset_index(name='IP_Count')
     country_ip_counts.columns = ['COUNTRY', 'IP_Count']
     
     # Counts per country per day
-    daily_counts = origin.groupby(['date', 'country']).size().reset_index(name='IP_Count')
+    daily_counts = origin.groupby(['date', 'country_code']).size().reset_index(name='IP_Count')
     daily_counts.columns = ['Date', 'COUNTRY', 'IP_Count']
     
     # Ensure all countries are represented for each date
     all_dates = daily_counts['Date'].unique()
-    all_countries = origin['country'].unique()
+    all_countries = origin['country_code'].unique()
     
     # Create a complete DataFrame with all date-country combinations
     complete_daily = pd.DataFrame([(date, country) for date in all_dates for country in all_countries],
@@ -105,6 +116,7 @@ daily_country_map.update_layout(
 # Add these lines at the end of the file for debugging
 print("Shape of origin data:", origin.shape)
 print("Unique countries in origin data:", origin['country'].unique())
+print("Unique country codes in origin data:", origin['country_code'].unique())
 print("Date range in origin data:", origin['date'].min(), "to", origin['date'].max())
 print("Shape of daily_country_data:", daily_country_data.shape)
 print("Unique countries in daily_country_data:", daily_country_data['COUNTRY'].unique())
