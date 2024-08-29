@@ -39,8 +39,7 @@ def create_pie_chart(data, selected_topic='All'):
     if selected_topic == 'All':
         pie_data = data.groupby('Topic')['Inquiries'].sum().reset_index()
     else:
-        pie_data = data[data['Topic'] ==
-selected_topic].groupby('Subcategory')['Inquiries'].sum().reset_index()
+        pie_data = data[data['Topic'] == selected_topic].groupby('Subcategory')['Inquiries'].sum().reset_index()
 
     return pd.DataFrame({
         "labels": pie_data.iloc[:, 0],  # Topic or Subcategory
