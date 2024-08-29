@@ -3,7 +3,7 @@ import numpy as np
 from taipy.gui import Markdown
 import plotly.express as px
 
-from data.data import data, geojson, vaccination
+from data.data import data, geojson, origin
 
 
 def initialize_map(data):
@@ -49,37 +49,42 @@ cluster_map.update_layout(margin={"r":0,"t":0,"l":0,"b":0},
                   dragmode="zoom")
 
 
-mean_rate_of_vaccination = np.mean(vaccination['Rate_First_Vaccination'])
-sum_vaccination = vaccination['Total_First_Vaccination'].sum()
-countries_selected = []
-vaccination_map = px.choropleth_mapbox(vaccination,
-                           geojson=geojson,  # You need a GeoJSON file for the country boundaries
-                           featureidkey="id",
-                           locations="ISO_A3",  # Column in your dataframe that matches GeoJSON features
-                           color="Rate_First_Vaccination",  # Column giving the color intensity
-                           hover_name="COUNTRY",  # Column for hover info
-                           hover_data={"Rate_First_Vaccination": True, "Total_First_Vaccination": True},
-                           zoom=1,  # Zoom level
-                           center={"lat": 0, "lon": 0},  # Map center
-                           color_continuous_scale="Viridis_r",  # Color scale
-                           mapbox_style="carto-positron",
-                           labels={"Rate_First_Vaccination": "Vaccination Rate", "Total_First_Vaccination": "Vaccination Count"},
-                           title="COVID-19 Vaccination Rates per 100 People by Country")  # Title of the map
+def process_origin_data(origin):
+    # Group by country and count unique IPs
+    country_ip_counts = origin.groupby('country')['ip'].nunique().reset_index()
+    country_ip_counts.columns = ['COUNTRY', 'IP_Count']
+    return country_ip_counts
 
-vaccination_map.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+country_ip_data = process_origin_data(origin)
+total_ips = country_ip_data['IP_Count'].sum()
+countries_selected = []
+
+ip_map = px.choropleth_mapbox(country_ip_data,
+                           geojson=geojson,
+                           featureidkey="id",
+                           locations="COUNTRY",  # Assuming 'COUNTRY' matches the geojson ids
+                           color="IP_Count",
+                           hover_name="COUNTRY",
+                           hover_data={"IP_Count": True},
+                           zoom=1,
+                           center={"lat": 0, "lon": 0},
+                           color_continuous_scale="Viridis",
+                           mapbox_style="carto-positron",
+                           labels={"IP_Count": "Number of IPs"},
+                           title="Number of IP Addresses by Country")
+
+ip_map.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
 
 
 def on_change(state, var_name, var_value):
     if var_name == 'countries_selected' and len(var_value)>0:
-        # Mean rate of vaccination:
-        state.mean_rate_of_vaccination = state.vaccination.loc[var_value, 'Rate_First_Vaccination'].mean()
-        # Sum count of vaccination:
-        state.sum_vaccination = state.vaccination.loc[var_value, 'Total_First_Vaccination'].sum()
+        # Sum of IPs for selected countries
+        state.total_ips = state.country_ip_data.loc[state.country_ip_data['COUNTRY'].isin(var_value), 'IP_Count'].sum()
     elif var_name == 'countries_selected':
-        state.mean_rate_of_vaccination = np.mean(vaccination['Rate_First_Vaccination'])
-        state.sum_vaccination = vaccination['Total_First_Vaccination'].sum()
+        state.total_ips = state.country_ip_data['IP_Count'].sum()
+    
     if var_name == 'cluster_selected' and len(var_value)>0:
-        # Sum of deaths
+        # Sum of deaths (keeping this part as it was)
         state.sum_deaths = state.data_province_displayed.loc[var_value, 'Deaths'].sum()
     elif var_name == 'cluster_selected':    
         state.sum_deaths = data_province_displayed['Deaths'].sum()

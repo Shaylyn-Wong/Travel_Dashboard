@@ -10,9 +10,9 @@ You can select clusters and countries in the two maps below. These will give you
 |>
 
 <|
-### Vaccination Rate
-##### Mean Rate of Vaccination: <|{int(mean_rate_of_vaccination)}|text|raw|> % | Total Vaccinations: <|{to_text(sum_vaccination)}|text|raw|>
-<|chart|figure={vaccination_map}|height=700px|selected={countries_selected}|>
+### IP Addresses by Country
+##### Total IPs: <|{to_text(total_ips)}|text|raw|>
+<|chart|figure={ip_map}|height=700px|selected={countries_selected}|>
 |>
 |>
 
