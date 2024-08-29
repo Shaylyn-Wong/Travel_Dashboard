@@ -42,7 +42,8 @@ ip_map = px.choropleth_mapbox(country_ip_data,
                            title="Total IP Count by Country (Log Scale)")
 
 ip_map.update_layout(margin={"r":0,"t":0,"l":0,"b":0},
-                     coloraxis_colorbar=dict(title="Log(Total IPs)"))
+                     coloraxis_colorbar=dict(title="Log(Total IPs)"),
+                     height=700)
 
 # Create daily country count map
 daily_country_map = px.choropleth(daily_country_data,
