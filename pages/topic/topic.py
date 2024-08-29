@@ -67,6 +67,7 @@ def create_pie_chart(data, selected_topic='All'):
 data_topic_date, y_values = initialize_case_evolution(data, selected_topic)
 print("Initial data_topic_date:\n", data_topic_date)
 chart_config = generate_chart_config(data_topic_date, y_values, layout, options)
+print("Generated chart_config:\n", chart_config)
 pie_chart = create_pie_chart(data)
 
 # Define selector_topic here
