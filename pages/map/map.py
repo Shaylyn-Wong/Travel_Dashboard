@@ -14,10 +14,10 @@ def process_origin_data(origin):
     country_ip_counts.columns = ['COUNTRY', 'IP_Count']
     country_ip_counts['IP_Count_Log'] = np.log10(country_ip_counts['IP_Count'] + 1)  # Add 1 to avoid log(0)
     
-    # Counts of unique countries per day
+    # Counts per country per day
     origin['date'] = pd.to_datetime(origin['date'])
-    daily_counts = origin.groupby('date')['country'].nunique().reset_index(name='Country_Count')
-    daily_counts.columns = ['Date', 'Country_Count']
+    daily_counts = origin.groupby(['date', 'country']).size().reset_index(name='Country_Count')
+    daily_counts.columns = ['Date', 'COUNTRY', 'Country_Count']
     daily_counts['Date'] = daily_counts['Date'].astype(str)  # Convert Date to string for choropleth
     
     return country_ip_counts, daily_counts
@@ -45,26 +45,43 @@ ip_map.update_layout(margin={"r":0,"t":0,"l":0,"b":0},
                      coloraxis_colorbar=dict(title="Log(Total IPs)"))
 
 # Create daily country count map
-daily_country_map = px.choropleth_mapbox(daily_country_data,
+daily_country_map = px.choropleth(daily_country_data,
                            geojson=geojson,
                            featureidkey="id",
-                           locations="Date",
+                           locations="COUNTRY",
                            color="Country_Count",
                            animation_frame="Date",
-                           zoom=1,
-                           center={"lat": 0, "lon": 0},
+                           scope="world",
                            color_continuous_scale="Viridis",
-                           mapbox_style="carto-positron",
                            labels={"Country_Count": "Unique Countries"},
                            title="Daily Unique Country Count")
 
-daily_country_map.update_layout(margin={"r":0,"t":0,"l":0,"b":0},
-                     coloraxis_colorbar=dict(title="Unique Countries"),
-                     height=700)
+daily_country_map.update_layout(
+    geo=dict(showframe=False, showcoastlines=True, projection_type='equirectangular'),
+    height=700,
+    updatemenus=[dict(
+        type='buttons',
+        showactive=False,
+        buttons=[dict(label='Play',
+                      method='animate',
+                      args=[None, {'frame': {'duration': 500, 'redraw': True}, 'fromcurrent': True}]),
+                 dict(label='Pause',
+                      method='animate',
+                      args=[[None], {'frame': {'duration': 0, 'redraw': False}, 'mode': 'immediate', 'transition': {'duration': 0}}])]
+    )]
+)
 
-# Add play button
-daily_country_map.layout.updatemenus[0].buttons[0].args[1]['frame']['duration'] = 1000
-daily_country_map.layout.updatemenus[0].buttons[0].args[1]['transition']['duration'] = 500
+# Add slider
+daily_country_map.update_layout(
+    sliders=[dict(
+        active=0,
+        steps=[dict(
+            method='animate',
+            args=[[f.name], {'frame': {'duration': 0, 'redraw': True}, 'mode': 'immediate'}],
+            label=f.name
+        ) for f in daily_country_map.frames]
+    )]
+)
 
 def on_change(state, var_name, var_value):
     if var_name == 'countries_selected' and len(var_value)>0:
