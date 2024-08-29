@@ -48,7 +48,7 @@ def initialize_case_evolution(data, selected_topic='All'):
     return data_topic_date, y_values
 
 def generate_chart_config(data_topic_date, y_values, layout, options):
-    chart_config = "<|chart|type=bar|x=Date|y[1]=Shopping|y[2]=Dining|y[3]=Attractions|layout={'barmode': 'stack', 'hovermode': 'x'}|options={'unselected': {'marker': {'opacity': 0.5}}}|title=Tourists' Activities|>"
+    chart_config = "<|chart|type=bar|x=Date|y[3]=Shopping|y[2]=Dining|y[1]=Attractions|layout={'barmode': 'stack', 'hovermode': 'x'}|options={'unselected': {'marker': {'opacity': 0.5}}}|title=Tourists' Activities|>"
     return chart_config
 
 def create_pie_chart(data, selected_topic='All'):
