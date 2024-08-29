@@ -5,7 +5,7 @@ from taipy.gui import Markdown
 import plotly.express as px
 import plotly.graph_objects as go
 
-from ...data.data import data, geojson, origin
+from ...data.data import geojson, origin
 
 # Process origin data
 def process_origin_data(origin):
