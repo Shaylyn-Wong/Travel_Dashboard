@@ -9,15 +9,30 @@ from data.data import data, geojson, origin
 
 # Process origin data
 def process_origin_data(origin):
+    # Ensure 'date' column is datetime
+    origin['date'] = pd.to_datetime(origin['date'])
+    
     # Total counts per country
     country_ip_counts = origin.groupby('country').size().reset_index(name='IP_Count')
     country_ip_counts.columns = ['COUNTRY', 'IP_Count']
     
     # Counts per country per day
-    origin['date'] = pd.to_datetime(origin['date'])
     daily_counts = origin.groupby(['date', 'country']).size().reset_index(name='IP_Count')
     daily_counts.columns = ['Date', 'COUNTRY', 'IP_Count']
-    daily_counts['Date'] = daily_counts['Date'].astype(str)  # Convert Date to string for choropleth
+    
+    # Ensure all countries are represented for each date
+    all_dates = daily_counts['Date'].unique()
+    all_countries = origin['country'].unique()
+    
+    # Create a complete DataFrame with all date-country combinations
+    complete_daily = pd.DataFrame([(date, country) for date in all_dates for country in all_countries],
+                                  columns=['Date', 'COUNTRY'])
+    
+    # Merge with the actual counts, filling missing values with 0
+    daily_counts = complete_daily.merge(daily_counts, on=['Date', 'COUNTRY'], how='left').fillna(0)
+    
+    # Convert Date to string for choropleth
+    daily_counts['Date'] = daily_counts['Date'].astype(str)
     
     return country_ip_counts, daily_counts
 
