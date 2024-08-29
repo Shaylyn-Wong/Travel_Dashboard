@@ -113,19 +113,6 @@ daily_country_map.update_layout(
     )]
 )
 
-# Add these lines at the end of the file for debugging
-print("Shape of origin data:", origin.shape)
-print("Unique countries in origin data:", origin['country'].unique())
-print("Unique country codes in origin data:", origin['country_code'].unique())
-print("Date range in origin data:", origin['date'].min(), "to", origin['date'].max())
-print("Shape of daily_country_data:", daily_country_data.shape)
-print("Unique countries in daily_country_data:", daily_country_data['COUNTRY'].unique())
-print("Date range in daily_country_data:", daily_country_data['Date'].min(), "to", daily_country_data['Date'].max())
-print("Sample of daily_country_data:")
-print(daily_country_data.head())
-print("USA data in daily_country_data:")
-print(daily_country_data[daily_country_data['COUNTRY'] == 'USA'])
-
 # Add these lines after processing the data
 avg_daily_ip_count = daily_counts['IP_Count'].mean()
 total_daily_ip_count = daily_counts['IP_Count'].sum()
