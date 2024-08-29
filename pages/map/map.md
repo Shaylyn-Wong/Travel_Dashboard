@@ -10,9 +10,11 @@ You can select clusters and countries in the two maps below. These will give you
 |>
 
 <|
-### IP Addresses by Country
-##### Total IPs: <|{to_text(total_ips)}|text|raw|>
+### IP Addresses by Country (Log Scale)
+##### Total Unique IPs: <|{to_text(total_ips)}|text|raw|>
 <|chart|figure={ip_map}|height=700px|selected={countries_selected}|>
+
+The map above shows the distribution of IP addresses by country using a logarithmic scale. This helps to visualize the differences between countries with very high and very low numbers of IP addresses.
 |>
 |>
 

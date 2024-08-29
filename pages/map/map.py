@@ -53,6 +53,7 @@ def process_origin_data(origin):
     # Group by country and count unique IPs
     country_ip_counts = origin.groupby('country')['ip'].nunique().reset_index()
     country_ip_counts.columns = ['COUNTRY', 'IP_Count']
+    country_ip_counts['IP_Count_Log'] = np.log10(country_ip_counts['IP_Count'] + 1)  # Add 1 to avoid log(0)
     return country_ip_counts
 
 country_ip_data = process_origin_data(origin)
@@ -62,18 +63,19 @@ countries_selected = []
 ip_map = px.choropleth_mapbox(country_ip_data,
                            geojson=geojson,
                            featureidkey="id",
-                           locations="COUNTRY",  # Assuming 'COUNTRY' matches the geojson ids
-                           color="IP_Count",
+                           locations="COUNTRY",
+                           color="IP_Count_Log",
                            hover_name="COUNTRY",
-                           hover_data={"IP_Count": True},
+                           hover_data={"IP_Count": True, "IP_Count_Log": False},
                            zoom=1,
                            center={"lat": 0, "lon": 0},
                            color_continuous_scale="Viridis",
                            mapbox_style="carto-positron",
-                           labels={"IP_Count": "Number of IPs"},
-                           title="Number of IP Addresses by Country")
+                           labels={"IP_Count": "Number of IPs", "IP_Count_Log": "Log(Number of IPs)"},
+                           title="Number of IP Addresses by Country (Log Scale)")
 
-ip_map.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+ip_map.update_layout(margin={"r":0,"t":0,"l":0,"b":0},
+                     coloraxis_colorbar=dict(title="Log(IPs)"))
 
 
 def on_change(state, var_name, var_value):
