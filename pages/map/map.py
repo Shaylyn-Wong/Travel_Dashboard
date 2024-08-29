@@ -18,6 +18,7 @@ def process_origin_data(origin):
     origin['date'] = pd.to_datetime(origin['date'])
     daily_counts = origin.groupby('date')['country'].nunique().reset_index(name='Country_Count')
     daily_counts.columns = ['Date', 'Country_Count']
+    daily_counts['Date'] = daily_counts['Date'].astype(str)  # Convert Date to string for choropleth
     
     return country_ip_counts, daily_counts
 
@@ -47,10 +48,9 @@ ip_map.update_layout(margin={"r":0,"t":0,"l":0,"b":0},
 daily_country_map = px.choropleth_mapbox(daily_country_data,
                            geojson=geojson,
                            featureidkey="id",
-                           locations="COUNTRY",
+                           locations="Date",
                            color="Country_Count",
                            animation_frame="Date",
-                           hover_name="COUNTRY",
                            zoom=1,
                            center={"lat": 0, "lon": 0},
                            color_continuous_scale="Viridis",
