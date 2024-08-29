@@ -11,8 +11,8 @@ This map shows the total distribution of IP addresses by country using a logarit
 
 <|
 ### Daily Unique Country Count
-<|chart|figure={daily_country_chart}|height=700px|>
+<|chart|figure={daily_country_map}|height=700px|>
 
-This chart shows the daily count of unique countries. The line represents how the number of unique countries changes over time.
+This map shows the daily count of unique countries. The color intensity represents the number of unique countries for each country on a given day. Use the animation controls to see how the distribution changes over time.
 |>
 |>
