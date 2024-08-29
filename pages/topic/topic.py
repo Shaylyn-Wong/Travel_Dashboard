@@ -66,6 +66,7 @@ def create_pie_chart(data, selected_topic='All'):
 # Initialize data
 data_topic_date, y_values = initialize_case_evolution(data, selected_topic)
 print("Initial data_topic_date:\n", data_topic_date)
+print("Data for chart_config:\n", data_topic_date)
 chart_config = generate_chart_config(data_topic_date, y_values, layout, options)
 print("Generated chart_config:\n", chart_config)
 print("Generated chart_config:\n", chart_config)
