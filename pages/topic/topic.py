@@ -50,7 +50,7 @@ def initialize_case_evolution(data, selected_topic='All'):
 def generate_chart_config(data_topic_date, y_values, layout, options):
     y_config = "|".join([f"y[{i}]={y}" for i, y in enumerate(y_values)])
     chart_config = f"<|chart|type=bar|x=Date|{y_config}|layout={layout}|options={options}|title=Tourists' Activities|>"
-    return chart_config
+    return chart_config.replace("'", '"')
 
 def create_pie_chart(data, selected_topic='All'):
     if selected_topic == 'All':

@@ -33,7 +33,7 @@ This page provides a view of the tourists' interests, with statistics on the num
 <|{chart_config}|chart|type=bar|>
 
 <|{pie_chart}|chart|type=pie|values=values|labels=labels|title=Distribution Among Activities|>
-|>
+</|layout|>
 
 <br/>
 
