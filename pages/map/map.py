@@ -9,17 +9,20 @@ from data.data import data, geojson, origin
 
 # Process origin data
 def process_origin_data(origin):
-    # Total counts of unique countries
-    country_counts = origin['country'].nunique()
+    # Total counts per country
+    country_ip_counts = origin.groupby('country').size().reset_index(name='IP_Count')
+    country_ip_counts.columns = ['COUNTRY', 'IP_Count']
+    country_ip_counts['IP_Count_Log'] = np.log10(country_ip_counts['IP_Count'] + 1)  # Add 1 to avoid log(0)
     
     # Counts of unique countries per day
     origin['date'] = pd.to_datetime(origin['date'])
     daily_counts = origin.groupby('date')['country'].nunique().reset_index(name='Country_Count')
     daily_counts.columns = ['Date', 'Country_Count']
     
-    return country_counts, daily_counts
+    return country_ip_counts, daily_counts
 
-total_countries, daily_country_data = process_origin_data(origin)
+country_ip_data, daily_country_data = process_origin_data(origin)
+total_ips = country_ip_data['IP_Count'].sum()
 countries_selected = []
 
 # Create total IP count map
