@@ -10,13 +10,13 @@ from data.data import data, geojson, origin
 # Process origin data
 def process_origin_data(origin):
     # Total counts per country
-    country_ip_counts = origin.groupby('country')['ip'].nunique().reset_index()
+    country_ip_counts = origin.groupby('country').size().reset_index(name='IP_Count')
     country_ip_counts.columns = ['COUNTRY', 'IP_Count']
     country_ip_counts['IP_Count_Log'] = np.log10(country_ip_counts['IP_Count'] + 1)  # Add 1 to avoid log(0)
     
     # Counts per day for each country
     origin['date'] = pd.to_datetime(origin['date'])
-    daily_counts = origin.groupby(['country', 'date'])['ip'].nunique().reset_index()
+    daily_counts = origin.groupby(['country', 'date']).size().reset_index(name='IP_Count')
     daily_counts.columns = ['COUNTRY', 'Date', 'IP_Count']
     
     return country_ip_counts, daily_counts
@@ -37,11 +37,11 @@ ip_map = px.choropleth_mapbox(country_ip_data,
                            center={"lat": 0, "lon": 0},
                            color_continuous_scale="Viridis",
                            mapbox_style="carto-positron",
-                           labels={"IP_Count": "Number of IPs", "IP_Count_Log": "Log(Number of IPs)"},
-                           title="Total Number of IP Addresses by Country (Log Scale)")
+                           labels={"IP_Count": "Total IP Count", "IP_Count_Log": "Log(Total IP Count)"},
+                           title="Total IP Count by Country (Log Scale)")
 
 ip_map.update_layout(margin={"r":0,"t":0,"l":0,"b":0},
-                     coloraxis_colorbar=dict(title="Log(IPs)"))
+                     coloraxis_colorbar=dict(title="Log(Total IPs)"))
 
 # Create daily IP count map
 daily_ip_map = px.choropleth_mapbox(daily_ip_data,
@@ -55,11 +55,11 @@ daily_ip_map = px.choropleth_mapbox(daily_ip_data,
                                     center={"lat": 0, "lon": 0},
                                     color_continuous_scale="Viridis",
                                     mapbox_style="carto-positron",
-                                    labels={"IP_Count": "Number of IPs"},
-                                    title="Daily Number of IP Addresses by Country")
+                                    labels={"IP_Count": "Total IP Count"},
+                                    title="Daily Total IP Count by Country")
 
 daily_ip_map.update_layout(margin={"r":0,"t":0,"l":0,"b":0},
-                           coloraxis_colorbar=dict(title="IPs"))
+                           coloraxis_colorbar=dict(title="Total IPs"))
 
 def on_change(state, var_name, var_value):
     if var_name == 'countries_selected' and len(var_value)>0:
