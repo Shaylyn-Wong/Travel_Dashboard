@@ -9,24 +9,18 @@ from data.data import data, geojson, origin
 
 # Process origin data
 def process_origin_data(origin):
-    # Total counts per country
-    country_ip_counts = origin.groupby('country').size().reset_index(name='IP_Count')
-    country_ip_counts.columns = ['COUNTRY', 'IP_Count']
-    country_ip_counts['IP_Count_Log'] = np.log10(country_ip_counts['IP_Count'] + 1)  # Add 1 to avoid log(0)
+    # Total counts of unique countries
+    country_counts = origin['country'].nunique()
     
-    # Counts per day for each country
+    # Counts of unique countries per day
     origin['date'] = pd.to_datetime(origin['date'])
-    daily_counts = origin.groupby(['country', 'date']).size().reset_index(name='IP_Count')
-    daily_counts.columns = ['COUNTRY', 'Date', 'IP_Count']
+    daily_counts = origin.groupby('date')['country'].nunique().reset_index(name='Country_Count')
+    daily_counts.columns = ['Date', 'Country_Count']
     
-    return country_ip_counts, daily_counts
+    return country_counts, daily_counts
 
-country_ip_data, daily_ip_data = process_origin_data(origin)
-total_ips = country_ip_data['IP_Count'].sum()
+total_countries, daily_country_data = process_origin_data(origin)
 countries_selected = []
-
-# Calculate the maximum daily IP count for color scale
-max_daily_ip_count = daily_ip_data['IP_Count'].max()
 
 # Create total IP count map
 ip_map = px.choropleth_mapbox(country_ip_data,
@@ -46,29 +40,20 @@ ip_map = px.choropleth_mapbox(country_ip_data,
 ip_map.update_layout(margin={"r":0,"t":0,"l":0,"b":0},
                      coloraxis_colorbar=dict(title="Log(Total IPs)"))
 
-# Create daily IP count map
-daily_ip_map = px.choropleth_mapbox(daily_ip_data,
-                                    geojson=geojson,
-                                    featureidkey="id",
-                                    locations="COUNTRY",
-                                    color="IP_Count",
-                                    animation_frame="Date",
-                                    hover_name="COUNTRY",
-                                    hover_data={"IP_Count": True},
-                                    zoom=1,
-                                    center={"lat": 0, "lon": 0},
-                                    color_continuous_scale="Viridis",
-                                    range_color=[0, max_daily_ip_count],
-                                    mapbox_style="carto-positron",
-                                    labels={"IP_Count": "Daily IP Count"},
-                                    title="Daily IP Count by Country")
+# Create daily country count chart
+daily_country_chart = px.line(daily_country_data, x='Date', y='Country_Count',
+                              title='Daily Unique Country Count',
+                              labels={'Country_Count': 'Unique Countries', 'Date': 'Date'},
+                              line_shape='linear')
 
-daily_ip_map.update_layout(margin={"r":0,"t":0,"l":0,"b":0},
-                           coloraxis_colorbar=dict(title="Daily IPs"))
+daily_country_chart.update_layout(
+    xaxis_title='Date',
+    yaxis_title='Number of Unique Countries',
+    height=700,
+    hovermode='x unified'
+)
 
-# Add play button configuration
-daily_ip_map.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 500
-daily_ip_map.layout.updatemenus[0].buttons[0].args[1]["transition"]["duration"] = 300
+daily_country_chart.update_traces(mode='lines+markers')
 
 def on_change(state, var_name, var_value):
     if var_name == 'countries_selected' and len(var_value)>0:
