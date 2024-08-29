@@ -17,10 +17,3 @@ This map shows the daily count of unique countries. The color intensity represen
 |>
 |>
 
-## Data Used for Maps
-
-### Country IP Data
-<|{country_ip_html}|raw|>
-
-### Daily Country Data
-<|{daily_country_html}|raw|>
