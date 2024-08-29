@@ -55,8 +55,14 @@ daily_country_map = px.choropleth(daily_country_data,
                            animation_frame="Date",
                            scope="world",
                            color_continuous_scale="Viridis",
+                           range_color=[0, daily_country_data['IP_Count'].max()],
                            labels={"IP_Count": "IP Count"},
                            title="Daily IP Count by Country")
+
+daily_country_map.update_traces(
+    hovertemplate="<b>%{location}</b><br>Date: %{customdata[0]}<br>IP Count: %{z}",
+    customdata=daily_country_data[['Date', 'IP_Count']]
+)
 
 daily_country_map.update_layout(
     geo=dict(showframe=False, showcoastlines=True, projection_type='equirectangular'),
@@ -70,11 +76,7 @@ daily_country_map.update_layout(
                  dict(label='Pause',
                       method='animate',
                       args=[[None], {'frame': {'duration': 0, 'redraw': False}, 'mode': 'immediate', 'transition': {'duration': 0}}])]
-    )]
-)
-
-# Add slider
-daily_country_map.update_layout(
+    )],
     sliders=[dict(
         active=0,
         steps=[dict(
@@ -84,6 +86,9 @@ daily_country_map.update_layout(
         ) for f in daily_country_map.frames]
     )]
 )
+
+# Add this line at the end of the file for debugging
+print(daily_country_data[daily_country_data['COUNTRY'] == 'USA'])
 
 # Add these lines after processing the data
 avg_daily_ip_count = daily_counts['IP_Count'].mean()
