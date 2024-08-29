@@ -25,6 +25,9 @@ country_ip_data, daily_country_data = process_origin_data(origin)
 total_ips = country_ip_data['IP_Count'].sum()
 countries_selected = []
 
+# Create daily counts
+daily_counts = daily_country_data.groupby('Date')['IP_Count'].sum().reset_index()
+
 # Create total IP count map
 ip_map = px.choropleth_mapbox(country_ip_data,
                            geojson=geojson,
@@ -85,6 +88,13 @@ daily_country_map.update_layout(
 # Add these lines after processing the data
 avg_daily_ip_count = daily_counts['IP_Count'].mean()
 total_daily_ip_count = daily_counts['IP_Count'].sum()
+
+# Initialize state variables
+state = {
+    'total_ips': total_ips,
+    'avg_daily_ip_count': avg_daily_ip_count,
+    'total_daily_ip_count': total_daily_ip_count
+}
 
 def on_change(state, var_name, var_value):
     if var_name == 'countries_selected' and len(var_value) > 0:
