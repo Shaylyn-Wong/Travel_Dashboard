@@ -25,6 +25,9 @@ country_ip_data, daily_ip_data = process_origin_data(origin)
 total_ips = country_ip_data['IP_Count'].sum()
 countries_selected = []
 
+# Calculate the maximum daily IP count for color scale
+max_daily_ip_count = daily_ip_data['IP_Count'].max()
+
 # Create total IP count map
 ip_map = px.choropleth_mapbox(country_ip_data,
                            geojson=geojson,
@@ -51,15 +54,21 @@ daily_ip_map = px.choropleth_mapbox(daily_ip_data,
                                     color="IP_Count",
                                     animation_frame="Date",
                                     hover_name="COUNTRY",
+                                    hover_data={"IP_Count": True},
                                     zoom=1,
                                     center={"lat": 0, "lon": 0},
                                     color_continuous_scale="Viridis",
+                                    range_color=[0, max_daily_ip_count],
                                     mapbox_style="carto-positron",
-                                    labels={"IP_Count": "Total IP Count"},
-                                    title="Daily Total IP Count by Country")
+                                    labels={"IP_Count": "Daily IP Count"},
+                                    title="Daily IP Count by Country")
 
 daily_ip_map.update_layout(margin={"r":0,"t":0,"l":0,"b":0},
-                           coloraxis_colorbar=dict(title="Total IPs"))
+                           coloraxis_colorbar=dict(title="Daily IPs"))
+
+# Add play button configuration
+daily_ip_map.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 500
+daily_ip_map.layout.updatemenus[0].buttons[0].args[1]["transition"]["duration"] = 300
 
 def on_change(state, var_name, var_value):
     if var_name == 'countries_selected' and len(var_value)>0:
