@@ -51,12 +51,12 @@ daily_country_map = px.choropleth(daily_country_data,
                            geojson=geojson,
                            featureidkey="id",
                            locations="COUNTRY",
-                           color="Country_Count",
+                           color="IP_Count",
                            animation_frame="Date",
                            scope="world",
                            color_continuous_scale="Viridis",
-                           labels={"Country_Count": "Unique Countries"},
-                           title="Daily Unique Country Count")
+                           labels={"IP_Count": "IP Count"},
+                           title="Daily IP Count by Country")
 
 daily_country_map.update_layout(
     geo=dict(showframe=False, showcoastlines=True, projection_type='equirectangular'),
