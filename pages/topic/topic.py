@@ -48,7 +48,7 @@ def initialize_case_evolution(data, selected_topic='All'):
     return data_topic_date, y_values
 
 def generate_chart_config(data_topic_date, y_values, layout, options):
-    y_config = "|".join([f"y[{i}]={y}" for i, y in enumerate(reversed(y_values))])
+    y_config = "|".join([f"y[{i}]={y}" for i, y in enumerate(y_values)])
     chart_config = f"<|chart|type=bar|x=Date|{y_config}|layout={layout}|options={options}|title=Tourists' Activities|>"
     return chart_config
 
