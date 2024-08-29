@@ -1,4 +1,4 @@
-# HKTB Dashboard - **Topic**{: .color-primary} Statistics
+# Taipy Dashboard - **Topic**{: .color-primary} Statistics
 
 This page provides a view of the tourists' interests, with statistics on the number of enquiries.
 
@@ -13,28 +13,28 @@ This page provides a view of the tourists' interests, with statistics on the num
 <|layout|columns=2 2 2 2 |gap=25px|columns[mobile]=1|
 <|card|
 **Attractions**{: .color-primary}
-<|{to_text(data_topic_date.iloc[-1]['Attractions']) if not data_topic_date.empty else 'No data'}|text|class_name=h3|>
+<|{to_text(data_topic_date.iloc[-1]['Attractions'])}|text|class_name=h3|>
 |>
 
 <|card|
 **Dining**{: .color-primary}
-<|{to_text(data_topic_date.iloc[-1]['Dining']) if not data_topic_date.empty else 'No data'}|text|class_name=h3|>
+<|{to_text(data_topic_date.iloc[-1]['Dining'])}|text|class_name=h3|>
 |>
 
 <|card|
 **Shopping**{: .color-primary}
-<|{to_text(data_topic_date.iloc[-1]['Shopping']) if not data_topic_date.empty else 'No data'}|text|class_name=h3|>
+<|{to_text(data_topic_date.iloc[-1]['Shopping'])}|text|class_name=h3|>
 |>
 |>
 
 <br/>
 
-<|layout|columns=2 1|columns[mobile]=1|>
-<|{chart_config}|chart|type=bar|>
+<|layout|columns=2 1|columns[mobile]=1|
+<|{data_topic_date}|chart|type=bar|x=Date|y[3]=Attractions|y[2]=Dining|y[1]=Shopping|layout={layout}|options={options}|title=Tourists'Activities|>
 
 <|{pie_chart}|chart|type=pie|values=values|labels=labels|title=Distribution Among Activities|>
-</|layout|>
-
+|>
+ 
 <br/>
 
 The data reflects the inquiries made by tourists, categorized by topics and subcategories. 

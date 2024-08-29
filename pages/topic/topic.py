@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from taipy.gui import Markdown
-from data.data import data
+from data.data import data  # Ensure this import provides the correct dataframe
 
 selected_topic = 'All'
 data_topic_date = None
@@ -11,52 +11,24 @@ layout = {'barmode':'stack', "hovermode":"x"}
 options = {"unselected":{"marker":{"opacity":0.5}}}
 
 def initialize_case_evolution(data, selected_topic='All'):
-    # Define y_mapping to determine required columns and y-values for the chart
-    y_mapping = {
-        'All': ['Attractions', 'Dining', 'Shopping'],
-        'Attractions': ['Indoor', 'Outdoor', 'Seasonal/Events-Based', 'Family-Friendly'],
-        'Dining': ['Local Cuisine', 'International Cuisine', 'Fine Dining', 'Street Food'],
-        'Shopping': ['Luxury Goods', 'Local Products', 'Electronics', 'Fashion']
-    }
-    
-    # Determine the y-values to use based on the selected topic
-    y_values = y_mapping.get(selected_topic, y_mapping['All'])
-
     if selected_topic == 'All':
         # Group by Date and Topic, sum the Inquiries
-        data_topic_date = data.groupby(['Date', 'Topic'])['Inquiries'].sum().unstack(fill_value=0).reset_index()
-        # Ensure all main topics are present
-        for topic in y_mapping['All']:
-            if topic not in data_topic_date.columns:
-                data_topic_date[topic] = 0
+        data_topic_date = data.groupby(['Date',
+'Topic'])['Inquiries'].sum().unstack(fill_value=0).reset_index()
     else:
         # Filter for selected topic, then group by Date and Subcategory
         data_filtered = data[data['Topic'] == selected_topic]
-        data_topic_date = data_filtered.groupby(['Date', 'Subcategory'])['Inquiries'].sum().unstack(fill_value=0).reset_index()
-        
-        # Ensure all required columns are present for the selected topic
-        for col in y_values:
-            if col not in data_topic_date.columns:
-                data_topic_date[col] = 0
-    
-    # Ensure the DataFrame is not empty
-    if data_topic_date.empty:
-        data_topic_date = pd.DataFrame(columns=['Date'] + y_values)
-        data_topic_date['Date'] = pd.to_datetime('today')
-        data_topic_date = data_topic_date.fillna(0)
-    
-    return data_topic_date, y_values
+        data_topic_date = data_filtered.groupby(['Date',
+'Subcategory'])['Inquiries'].sum().unstack(fill_value=0).reset_index()
 
-def generate_chart_config(data_topic_date, y_values, layout, options):
-    y_config = "|".join([f"y[{i}]={y}" for i, y in enumerate(y_values)])
-    chart_config = f"<|chart|type=bar|x=Date|{y_config}|layout={layout}|options={options}|title=Tourists' Activities|>"
-    return chart_config.replace("'", '"')
+    return data_topic_date
 
 def create_pie_chart(data, selected_topic='All'):
     if selected_topic == 'All':
         pie_data = data.groupby('Topic')['Inquiries'].sum().reset_index()
     else:
-        pie_data = data[data['Topic'] == selected_topic].groupby('Subcategory')['Inquiries'].sum().reset_index()
+        pie_data = data[data['Topic'] ==
+selected_topic].groupby('Subcategory')['Inquiries'].sum().reset_index()
 
     return pd.DataFrame({
         "labels": pie_data.iloc[:, 0],  # Topic or Subcategory
@@ -64,26 +36,12 @@ def create_pie_chart(data, selected_topic='All'):
     })
 
 # Initialize data
-data_topic_date, y_values = initialize_case_evolution(data, selected_topic)
-print("Initial data_topic_date:\n", data_topic_date)
-print("Data for chart_config:\n", data_topic_date)
-chart_config = generate_chart_config(data_topic_date, y_values, layout, options)
-print("Generated chart_config:\n", chart_config)
-print("Initial data_topic_date:\n", data_topic_date)
-print("Generated chart_config:\n", chart_config)
+data_topic_date = initialize_case_evolution(data)
 pie_chart = create_pie_chart(data)
-
-# Define selector_topic here
-selector_topic = ['All'] + list(np.sort(data['Topic'].astype(str).unique()))
 
 def on_change_topic(state):
     print("Chosen topic: ", state.selected_topic)
-    state.data_topic_date, _ = initialize_case_evolution(data, state.selected_topic)
-    print("Updated data_topic_date:\n", state.data_topic_date)
-    state.chart_config = generate_chart_config(state.data_topic_date, y_values, layout, options)
-    print("Updated chart_config:\n", state.chart_config)
+    state.data_topic_date = initialize_case_evolution(data, state.selected_topic)
     state.pie_chart = create_pie_chart(data, state.selected_topic)
 
 topic_md = Markdown("pages/topic/topic.md")
-def to_text(value):
-    return str(value)
