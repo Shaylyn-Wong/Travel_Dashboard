@@ -65,6 +65,7 @@ def create_pie_chart(data, selected_topic='All'):
 
 # Initialize data
 data_topic_date, y_values = initialize_case_evolution(data, selected_topic)
+print("Initial data_topic_date:\n", data_topic_date)
 chart_config = generate_chart_config(data_topic_date, y_values, layout, options)
 pie_chart = create_pie_chart(data)
 
@@ -74,6 +75,7 @@ selector_topic = ['All'] + list(np.sort(data['Topic'].astype(str).unique()))
 def on_change_topic(state):
     print("Chosen topic: ", state.selected_topic)
     state.data_topic_date, _ = initialize_case_evolution(data, state.selected_topic)
+    print("Updated data_topic_date:\n", state.data_topic_date)
     state.pie_chart = create_pie_chart(data, state.selected_topic)
 
 topic_md = Markdown("pages/topic/topic.md")
