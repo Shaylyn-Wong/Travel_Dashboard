@@ -11,7 +11,6 @@ layout = {'barmode':'stack', "hovermode":"x"}
 options = {"unselected":{"marker":{"opacity":0.5}}}
 
 def initialize_case_evolution(data, selected_topic='All'):
-    
     if selected_topic == 'All':
         # Group by Date and Topic, sum the Inquiries
         data_topic_date = data.groupby(['Date', 'Topic'])['Inquiries'].sum().unstack(fill_value=0).reset_index()
@@ -19,7 +18,21 @@ def initialize_case_evolution(data, selected_topic='All'):
         # Filter for selected topic, then group by Date and Subcategory
         data_filtered = data[data['Topic'] == selected_topic]
         data_topic_date = data_filtered.groupby(['Date', 'Subcategory'])['Inquiries'].sum().unstack(fill_value=0).reset_index()
-       
+        
+        # Define required columns for each topic
+        required_columns = {
+            'Attractions': ['Indoor Attractions', 'Outdoor Attractions', 
+                            'Seasonal/Events-Based Attractions', 'Family-Friendly Attractions'],
+            'Dining': ['Local Cuisine', 'International Cuisine', 'Fine Dining', 'Street Food'],
+            'Shopping': ['Luxury Goods', 'Local Products', 'Electronics', 'Fashion']
+        }
+        
+        # Ensure all required columns are present for the selected topic
+        if selected_topic in required_columns:
+            for col in required_columns[selected_topic]:
+                if col not in data_topic_date.columns:
+                    data_topic_date[col] = 0
+    
     return data_topic_date
 
 def create_pie_chart(data, selected_topic='All'):
