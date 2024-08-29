@@ -85,3 +85,5 @@ def on_change_topic(state):
     state.pie_chart = create_pie_chart(data, state.selected_topic)
 
 topic_md = Markdown("pages/topic/topic.md")
+def to_text(value):
+    return str(value)
