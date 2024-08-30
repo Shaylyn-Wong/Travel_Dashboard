@@ -30,7 +30,7 @@ This page provides a view of the tourists' interests, with statistics on the num
 <br/>
 
 <|layout|columns=2 1|columns[mobile]=1|
-<|{data_topic_date}|chart|type=bar|x=Date|y[3]=Attractions|y[2]=Dining|y[1]=Shopping|layout={layout}|options={options}|title=Tourists'Activities|>
+<|{data_topic_date}|chart|type=bar|properties={bar_properties}|>
 
 <|{pie_chart}|chart|type=pie|values=values|labels=labels|title=Distribution Among Activities|>
 |>
