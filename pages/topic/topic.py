@@ -72,12 +72,14 @@ def initialize_case_evolution(data, selected_topic='All'):
         data_topic_date = data_filtered.groupby(['Date', 'Subcategory'])['Inquiries'].sum().unstack(fill_value=0).reset_index()
         columns = data_topic_date.columns[1:].tolist()
 
-    # Create the correct y property structure
+    # Create the correct properties structure
     y_properties = {f"y[{i+1}]": col for i, col in enumerate(columns)}
+    color_properties = {f"color[{i+1}]": f"rgba({(i*50)%255}, {(i*100)%255}, {(i*150)%255}, 0.7)" for i in range(len(columns))}
 
     bar_properties = {
         "x": "Date",
-        **y_properties,  # Unpack the y properties
+        **y_properties,
+        **color_properties,
         "layout": {
             "barmode": "stack",
             "hovermode": "x",
@@ -94,22 +96,19 @@ def initialize_case_evolution(data, selected_topic='All'):
     print(f"Data columns: {data_topic_date.columns}")
     print(f"Data sample:\n{data_topic_date.head()}")
 
-    # Get the latest values for each topic
-    latest_values = data_topic_date.iloc[-1].to_dict()
-    latest_values.pop('Date', None)  # Remove the 'Date' key if it exists
-
-    return data_topic_date, bar_properties, columns, latest_values
+    return data_topic_date, bar_properties, columns
 
 def on_change_topic(state):
     print("Chosen topic: ", state.selected_topic)
-    state.data_topic_date, state.bar_properties, state.columns, _ = initialize_case_evolution(data, state.selected_topic)
+    state.data_topic_date, state.bar_properties, state.columns = initialize_case_evolution(data, state.selected_topic)
     state.pie_chart = create_pie_chart(data, state.selected_topic)
     print("Updated bar_properties:", state.bar_properties)
     
-    # We're not updating card_values here anymore
-    
-    # Ensure all necessary state variables are updated
-    state.bar_properties = state.bar_properties
-    state.data_topic_date = state.data_topic_date
+    # Force a re-render of the chart
+    state.data_topic_date = state.data_topic_date.copy()
 
 topic_md = Markdown("pages/topic/topic.md")
+
+# Initialize data
+data_topic_date, bar_properties, columns = initialize_case_evolution(data)
+pie_chart = create_pie_chart(data)
