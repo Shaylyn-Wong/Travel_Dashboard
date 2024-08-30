@@ -11,19 +11,9 @@ This page provides a view of the tourists' interests, with statistics on the num
 <br/>
 
 <|layout|columns=2 2 2 2 |gap=25px|columns[mobile]=1|
-<|card|
-**Attractions**{: .color-primary}
-<|{to_text(data_topic_date.iloc[-1]['Attractions'])}|text|class_name=h3|>
-|>
-
-<|card|
-**Dining**{: .color-primary}
-<|{to_text(data_topic_date.iloc[-1]['Dining'])}|text|class_name=h3|>
-|>
-
-<|card|
-**Shopping**{: .color-primary}
-<|{to_text(data_topic_date.iloc[-1]['Shopping'])}|text|class_name=h3|>
+<|{card_values}|card|
+**{card_key}**{: .color-primary}
+<|{card_value}|text|class_name=h3|>
 |>
 |>
 
