@@ -54,9 +54,9 @@ def create_pie_chart(data, selected_topic='All'):
 data_topic_date, bar_properties, columns = initialize_case_evolution(data)
 pie_chart = create_pie_chart(data)
 card_values = {
-    "Attractions": data_topic_date.iloc[-1]["Attractions"],
-    "Dining": data_topic_date.iloc[-1]["Dining"],
-    "Shopping": data_topic_date.iloc[-1]["Shopping"]
+    "Attractions": data_topic_date.iloc[-1].get("Attractions", 0),
+    "Dining": data_topic_date.iloc[-1].get("Dining", 0),
+    "Shopping": data_topic_date.iloc[-1].get("Shopping", 0)
 }
 
 def on_change_topic(state):
@@ -64,5 +64,8 @@ def on_change_topic(state):
     state.data_topic_date, state.bar_properties, state.columns = initialize_case_evolution(data, state.selected_topic)
     state.pie_chart = create_pie_chart(data, state.selected_topic)
     print("Updated bar_properties:", state.bar_properties)
+    
+    # Ensure bar_properties is updated in the state
+    state.bar_properties = state.bar_properties
 
 topic_md = Markdown("pages/topic/topic.md")
