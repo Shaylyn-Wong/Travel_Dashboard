@@ -72,9 +72,12 @@ def initialize_case_evolution(data, selected_topic='All'):
         data_topic_date = data_filtered.groupby(['Date', 'Subcategory'])['Inquiries'].sum().unstack(fill_value=0).reset_index()
         columns = data_topic_date.columns[1:].tolist()
 
+    # Create the correct y property structure
+    y_properties = {f"y[{i+1}]": col for i, col in enumerate(columns)}
+
     bar_properties = {
         "x": "Date",
-        "y": columns,
+        **y_properties,  # Unpack the y properties
         "layout": {
             "barmode": "stack",
             "hovermode": "x",
