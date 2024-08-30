@@ -10,10 +10,10 @@ This page provides a view of the tourists' interests, with statistics on the num
 
 <br/>
 
-<|layout|columns=2 2 2 2 |gap=25px|columns[mobile]=1|
+<|layout|columns=2 2 2 2|gap=25px|columns[mobile]=1|
 <|{card_values}|card|
-**{card_key}**{: .color-primary}
-<|{card_value}|text|class_name=h3|>
+**{key}**{: .color-primary}
+<|{value}|text|class_name=h3|>
 |>
 |>
 

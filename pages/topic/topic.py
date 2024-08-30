@@ -7,6 +7,7 @@ selected_topic = 'All'
 data_topic_date = None
 pie_chart = None
 bar_properties = None
+selector_topic = ['All', 'Attractions', 'Dining', 'Shopping']
 
 layout = {'barmode':'stack', "hovermode":"x"}
 options = {"unselected":{"marker":{"opacity":0.5}}}
