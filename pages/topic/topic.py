@@ -34,8 +34,14 @@ def initialize_case_evolution(data, selected_topic='All'):
         }
     }
 
+    # Ensure y values are correctly assigned for each column
     for i, col in enumerate(columns, start=1):
         bar_properties[f"y[{i}]"] = col
+
+    # Print for debugging
+    print(f"Selected topic: {selected_topic}")
+    print(f"Columns: {columns}")
+    print(f"Bar properties: {bar_properties}")
 
     return data_topic_date, bar_properties
 
@@ -58,5 +64,6 @@ def on_change_topic(state):
     print("Chosen topic: ", state.selected_topic)
     state.data_topic_date, state.bar_properties = initialize_case_evolution(data, state.selected_topic)
     state.pie_chart = create_pie_chart(data, state.selected_topic)
+    print("Updated bar_properties:", state.bar_properties)
 
 topic_md = Markdown("pages/topic/topic.md")
