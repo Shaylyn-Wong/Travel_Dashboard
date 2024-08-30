@@ -37,7 +37,11 @@ def initialize_case_evolution(data, selected_topic='All'):
     print(f"Columns: {columns}")
     print(f"Bar properties: {bar_properties}")
 
-    return data_topic_date, bar_properties, columns
+    # Get the latest values for each topic
+    latest_values = data_topic_date.iloc[-1].to_dict()
+    latest_values.pop('Date', None)  # Remove the 'Date' key if it exists
+
+    return data_topic_date, bar_properties, columns, latest_values
 
 def create_pie_chart(data, selected_topic='All'):
     if selected_topic == 'All':
@@ -51,19 +55,26 @@ def create_pie_chart(data, selected_topic='All'):
     })
 
 # Initialize data
-data_topic_date, bar_properties, columns = initialize_case_evolution(data)
+data_topic_date, bar_properties, columns, latest_values = initialize_case_evolution(data)
 pie_chart = create_pie_chart(data)
 card_values = {
-    "Attractions": data_topic_date.iloc[-1].get("Attractions", 0),
-    "Dining": data_topic_date.iloc[-1].get("Dining", 0),
-    "Shopping": data_topic_date.iloc[-1].get("Shopping", 0)
+    "Attractions": latest_values.get("Attractions", 0),
+    "Dining": latest_values.get("Dining", 0),
+    "Shopping": latest_values.get("Shopping", 0)
 }
 
 def on_change_topic(state):
     print("Chosen topic: ", state.selected_topic)
-    state.data_topic_date, state.bar_properties, state.columns = initialize_case_evolution(data, state.selected_topic)
+    state.data_topic_date, state.bar_properties, state.columns, latest_values = initialize_case_evolution(data, state.selected_topic)
     state.pie_chart = create_pie_chart(data, state.selected_topic)
     print("Updated bar_properties:", state.bar_properties)
+    
+    # Update card_values
+    state.card_values = {
+        "Attractions": latest_values.get("Attractions", 0),
+        "Dining": latest_values.get("Dining", 0),
+        "Shopping": latest_values.get("Shopping", 0)
+    }
     
     # Ensure bar_properties is updated in the state
     state.bar_properties = state.bar_properties
