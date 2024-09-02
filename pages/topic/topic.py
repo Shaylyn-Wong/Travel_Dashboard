@@ -38,6 +38,7 @@ def initialize_case_evolution(data, selected_topic='All'):
         }
     }
 
+    # Print debug information
     print(f"Selected topic: {selected_topic}")
     print(f"Columns: {columns}")
     print(f"Bar properties: {bar_properties}")
