@@ -3,7 +3,7 @@ from taipy.gui import Gui, navigate
 import taipy as tp
 
 from pages.topic.topic import topic_md
-#from pages.world.world import world_md
+from pages.performance.performance import performance_md
 from pages.map.map import map_md
 #from pages.predictions.predictions import predictions_md, selected_scenario
 from pages.root import root, selected_topic, selector_topic, to_text
@@ -13,8 +13,8 @@ from config.config import Config
 
 pages = {
     '/':root,
+    "Performance": performance_md,
     "Topic":topic_md,
-    #"World":world_md,
     "Map":map_md,
     #"Predictions":predictions_md
 }

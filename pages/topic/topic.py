@@ -68,13 +68,6 @@ def on_change_topic(state):
     state.pie_chart = create_pie_chart(data, state.selected_topic)
     print("Updated bar_properties:", state.bar_properties)
         
-    # Update card values
-    state.card_values = {
-        "Attractions": latest_values.get("Attractions", 0),
-        "Dining": latest_values.get("Dining", 0),
-        "Shopping": latest_values.get("Shopping", 0)
-    }
-    
     # Force a re-render of the chart
     state.data_topic_date = state.data_topic_date.copy()
 
