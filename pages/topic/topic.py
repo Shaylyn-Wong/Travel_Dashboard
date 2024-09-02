@@ -16,10 +16,12 @@ def initialize_case_evolution(data, selected_topic='All'):
     if selected_topic == 'All':
         data_topic_date = data.groupby(['Date', 'Topic'])['Inquiries'].sum().unstack(fill_value=0).reset_index()
         columns = ['Attractions', 'Dining', 'Shopping']
+        chart_title = "Tourists' Activities - All Topics"
     else:
         data_filtered = data[data['Topic'] == selected_topic]
         data_topic_date = data_filtered.groupby(['Date', 'Subcategory'])['Inquiries'].sum().unstack(fill_value=0).reset_index()
         columns = data_topic_date.columns[1:].tolist()
+        chart_title = f"Tourists' Activities - {selected_topic}"
 
     # Create the correct properties structure
     y_properties = {f"y[{i+1}]": col for i, col in enumerate(columns)}
@@ -32,7 +34,7 @@ def initialize_case_evolution(data, selected_topic='All'):
         "layout": {
             "barmode": "stack",
             "hovermode": "x",
-            "title": f"Tourists' Activities - {selected_topic}",
+            "title": chart_title,  # Use the dynamically set title
             "xaxis": {"title": "Date"},
             "yaxis": {"title": "Number of Inquiries"}
         }
@@ -74,6 +76,12 @@ def on_change_topic(state):
         "Dining": state.latest_values.get("Dining", 0),
         "Shopping": state.latest_values.get("Shopping", 0)
     }
+    
+    # Ensure the chart title is updated
+    if state.selected_topic == 'All':
+        state.bar_properties["layout"]["title"] = "Tourists' Activities - All Topics"
+    else:
+        state.bar_properties["layout"]["title"] = f"Tourists' Activities - {state.selected_topic}"
     
     print("Updated bar_properties:", state.bar_properties)
     print("Updated data_topic_date shape:", state.data_topic_date.shape)
