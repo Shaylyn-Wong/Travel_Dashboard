@@ -66,7 +66,21 @@ def on_change_topic(state):
     print("Chosen topic: ", state.selected_topic)
     state.data_topic_date, state.bar_properties, state.columns, state.latest_values, state.selected_topic = initialize_case_evolution(data, state.selected_topic)
     state.pie_chart = create_pie_chart(data, state.selected_topic)
+    
+    # Update card values
+    state.card_values = {
+        "Attractions": state.latest_values.get("Attractions", 0),
+        "Dining": state.latest_values.get("Dining", 0),
+        "Shopping": state.latest_values.get("Shopping", 0)
+    }
+    
     print("Updated bar_properties:", state.bar_properties)
+    print("Updated data_topic_date shape:", state.data_topic_date.shape)
+    print("Updated data_topic_date columns:", state.data_topic_date.columns)
+
+def on_change(state, var_name, var_value):
+    if var_name == "selected_topic":
+        on_change_topic(state)
 
 topic_md = Markdown("pages/topic/topic.md")
 
