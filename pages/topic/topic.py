@@ -52,7 +52,7 @@ def initialize_case_evolution(data, selected_topic='All'):
     latest_values = data_topic_date.iloc[-1].to_dict()
     latest_values.pop('Date', None)  # Remove the 'Date' key if it exists
 
-    return data_topic_date, bar_properties, columns, latest_values, selected_topic
+    return data_topic_date, bar_properties, columns, latest_values, selected_topic, chart_title
 
 def create_pie_chart(data, selected_topic='All'):
     if selected_topic == 'All':
