@@ -78,7 +78,7 @@ def on_change_topic(state):
     }
     
     # Ensure the chart title is updated
-    state.bar_properties["layout"]["title"] = chart_title
+    state.bar_properties["layout"]["title"] = state.chart_title
     
     state.pie_chart["title"] = f"Distribution among {state.selected_topic}"
     
@@ -96,6 +96,7 @@ topic_md = Markdown("pages/topic/topic.md")
 # Initialize data
 data_topic_date, bar_properties, columns, latest_values, selected_topic, chart_title = initialize_case_evolution(data)
 pie_chart = create_pie_chart(data)
+pie_chart["title"] = f"Distribution among {selected_topic}"
 pie_chart["title"] = f"Distribution among {selected_topic}"
 card_values = {
     "Attractions": latest_values.get("Attractions", 0),
