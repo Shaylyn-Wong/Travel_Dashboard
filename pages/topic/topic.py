@@ -20,13 +20,13 @@ def initialize_case_evolution(data, selected_topic='All'):
     else:
         data_filtered = data[data['Topic'] == selected_topic]
         data_topic_date = data_filtered.groupby(['Date', 'Subcategory'])['Inquiries'].sum().unstack(fill_value=0).reset_index()
-        columns = data_topic_date.columns[1:].tolist()
+        columns = data_topic_date.columns[1:].tolist() if not data_topic_date.empty else []
         chart_title = f"Tourists' Activities - {selected_topic}"
 
     # Check if the DataFrame is empty
     if data_topic_date.empty:
         print(f"Warning: No data available for topic '{selected_topic}'")
-        return pd.DataFrame(columns=['Date']), {}, [], {}, selected_topic, chart_title
+        return pd.DataFrame(columns=['Date']), {}, columns, {}, selected_topic, chart_title
 
     # Create the correct properties structure
     y_properties = {f"y[{i+1}]": col for i, col in enumerate(columns)}
@@ -76,33 +76,24 @@ def on_change_topic(state):
     state.pie_chart = create_pie_chart(data, state.selected_topic)
     
     # Ensure the chart title is updated
-    state.bar_properties["layout"]["title"] = state.chart_title
+    if state.bar_properties:
+        state.bar_properties["layout"]["title"] = state.chart_title
     
-    state.pie_chart["title"] = f"Distribution among {state.selected_topic}"
+    if state.pie_chart is not None:
+        state.pie_chart["title"] = f"Distribution among {state.selected_topic}"
     
     # Update card_values based on the selected topic
-    if state.selected_topic == 'All':
-        state.card_values = {
-            "Attractions": state.latest_values.get("Attractions", 0),
-            "Dining": state.latest_values.get("Dining", 0),
-            "Shopping": state.latest_values.get("Shopping", 0)
-        }
-    else:
-        # Use all columns except 'Date' for the cards
-        columns = state.data_topic_date.columns[1:]
-        state.card_values = {
-            col: state.latest_values.get(col, 0) for col in columns
-        }
-    
-    # Update the number of cards
-    state.num_cards = len(state.card_values)
+    state.card_values = {
+        "Attractions": state.latest_values.get("Attractions", 0),
+        "Dining": state.latest_values.get("Dining", 0),
+        "Shopping": state.latest_values.get("Shopping", 0)
+    }
     
     print("Updated bar_properties:", state.bar_properties)
-    print("Updated pie_chart title:", state.pie_chart["title"])
+    print("Updated pie_chart title:", state.pie_chart["title"] if state.pie_chart else "No pie chart data")
     print("Updated data_topic_date shape:", state.data_topic_date.shape)
     print("Updated data_topic_date columns:", state.data_topic_date.columns)
     print("Updated card_values:", state.card_values)
-    print("Number of cards:", state.num_cards)
 
 def on_change(state, var_name, var_value):
     if var_name == "selected_topic":
