@@ -76,8 +76,6 @@ def on_change_topic(state):
     state.selected_topic, state.columns, state.bar_properties, state.data_topic_date, state.latest_values = initialize_case_evolution(data, state.selected_topic)
     state.pie_chart = create_pie_chart(data, state.selected_topic)
     print("Updated bar_properties:", state.bar_properties)
-    # Reload the topic page to reflect the changes
-    state.reload("pages/topic/topic.md")
 
 topic_md = Markdown("pages/topic/topic.md")
 

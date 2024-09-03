@@ -7,8 +7,6 @@ from pages.performance.performance import performance_md
 from pages.map.map import map_md
 #from pages.predictions.predictions import predictions_md, selected_scenario
 from pages.root import root, selected_topic, selector_topic, to_text
-from pages.topic.topic import initialize_case_evolution, create_pie_chart
-from data.data import data
 
 from config.config import Config
 
@@ -27,13 +25,9 @@ def menu_action(state, action, payload):
     navigate(state, page)
 
 
-def initialize_state(gui):
-    state = gui._state
-    state.selected_topic, state.columns, state.bar_properties, state.data_topic_date, state.latest_values = initialize_case_evolution(data, selected_topic)
-    state.pie_chart = create_pie_chart(data, selected_topic)
-
 if __name__ == '__main__':
     gui_multi_pages = Gui(pages=pages)
+
     tp.Core().run()
-    initialize_state(gui_multi_pages)
+    
     gui_multi_pages.run(title="Taipy Dashboard")
