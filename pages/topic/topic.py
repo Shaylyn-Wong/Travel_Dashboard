@@ -85,9 +85,12 @@ def on_change_topic(state):
     print("Chosen topic: ", state.selected_topic)
     state.data_topic_date, state.columns, state.latest_values, state.card_values = initialize_case_evolution(data, state.selected_topic)
     state.bar_properties = generate_bar_properties(state.columns, state.selected_topic)
+    if not isinstance(state.bar_properties, dict):
+        print("Error: bar_properties is not a dictionary")
     state.bar_properties = dict(state.bar_properties)  # Convert to a dictionary if necessary
     state.pie_chart = create_pie_chart(data, state.selected_topic)
     print("Updated bar_properties:", state.bar_properties)
+    print(f"Type of state.bar_properties: {type(state.bar_properties)}")
 
 def on_change(state, var_name, var_value):
     if var_name == "columns":
