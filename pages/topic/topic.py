@@ -65,10 +65,11 @@ def create_pie_chart(data, selected_topic='All'):
     else:
         pie_data = data[data['Topic'] == selected_topic].groupby('Subcategory')['Inquiries'].sum().reset_index()
 
-    return pd.DataFrame({
-        "labels": pie_data.iloc[:, 0],  # Topic or Subcategory
-        "values": pie_data['Inquiries']
-    })
+    return {
+        "labels": pie_data.iloc[:, 0].tolist(),  # Topic or Subcategory
+        "values": pie_data['Inquiries'].tolist(),
+        "title": f"Distribution among {selected_topic}"
+    }
 
 def on_change_topic(state):
     print("Chosen topic: ", state.selected_topic)
@@ -78,13 +79,11 @@ def on_change_topic(state):
     # Update bar chart title
     if isinstance(state.bar_properties, dict) and "layout" in state.bar_properties:
         state.bar_properties["layout"]["title"] = state.chart_title
-    
-    # Update pie chart title
-    if isinstance(state.pie_chart, pd.DataFrame) and not state.pie_chart.empty:
-        state.pie_chart["title"] = f"Distribution among {state.selected_topic}"
+    elif hasattr(state.bar_properties, 'layout'):
+        state.bar_properties.layout.title = state.chart_title
     
     print("Updated bar_properties:", state.bar_properties)
-    print("Updated pie_chart title:", state.pie_chart.get("title", "No pie chart data") if isinstance(state.pie_chart, pd.DataFrame) else "No pie chart data")
+    print("Updated pie_chart:", state.pie_chart)
     print("Updated data_topic_date shape:", state.data_topic_date.shape if isinstance(state.data_topic_date, pd.DataFrame) else "No data")
     print("Updated data_topic_date columns:", state.data_topic_date.columns.tolist() if isinstance(state.data_topic_date, pd.DataFrame) else "No data")
 
