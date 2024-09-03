@@ -72,28 +72,21 @@ def create_pie_chart(data, selected_topic='All'):
 
 def on_change_topic(state):
     print("Chosen topic: ", state.selected_topic)
-    state.data_topic_date, state.bar_properties, state.columns, state.latest_values, state.selected_topic, state.chart_title = initialize_case_evolution(data, state.selected_topic)
+    state.data_topic_date, state.bar_properties, state.columns, _, state.selected_topic, state.chart_title = initialize_case_evolution(data, state.selected_topic)
     state.pie_chart = create_pie_chart(data, state.selected_topic)
     
-    # Ensure the chart title is updated
+    # Update bar chart title
     if state.bar_properties:
         state.bar_properties["layout"]["title"] = state.chart_title
     
+    # Update pie chart title
     if state.pie_chart is not None:
         state.pie_chart["title"] = f"Distribution among {state.selected_topic}"
-    
-    # Update card_values based on the selected topic
-    state.card_values = {
-        "Attractions": state.latest_values.get("Attractions", 0),
-        "Dining": state.latest_values.get("Dining", 0),
-        "Shopping": state.latest_values.get("Shopping", 0)
-    }
     
     print("Updated bar_properties:", state.bar_properties)
     print("Updated pie_chart title:", state.pie_chart["title"] if state.pie_chart else "No pie chart data")
     print("Updated data_topic_date shape:", state.data_topic_date.shape)
     print("Updated data_topic_date columns:", state.data_topic_date.columns)
-    print("Updated card_values:", state.card_values)
 
 def on_change(state, var_name, var_value):
     if var_name == "selected_topic":
