@@ -41,22 +41,21 @@ def initialize_case_evolution(data, selected_topic='All'):
     print(f"Selected topic: {selected_topic}")
     print(f"Columns: {columns}")
     print(f"Bar properties: {bar_properties}")
-    print(f"Data shape: {data_topic_date.shape}")
-    print(f"Data columns: {data_topic_date.columns}")
+    #print(f"Data shape: {data_topic_date.shape}")
+    #print(f"Data columns: {data_topic_date.columns}")
     print(f"Data sample:\n{data_topic_date.head()}")
 
-    # Get the latest values for each topic
-    latest_values = data_topic_date.iloc[-1].to_dict()
-    latest_values.pop('Date', None)  # Remove the 'Date' key if it exists
+    print(f"Data topic date after initialization: {data_topic_date.shape}")
+    print(f"Columns in the DataFrame: {data_topic_date.columns}")
 
-    return selected_topic, columns, bar_properties, data_topic_date, latest_values
+    return selected_topic, columns, bar_properties, data_topic_date
 
 def convert_data_topic_date(state):
     # Trigger a refresh by reassigning the properties
     if state.selected_topic == selected_topic:
         state.bar_properties = {**state.bar_properties}
         state.data_topic_date = state.data_topic_date.copy()
-
+        
 def create_pie_chart(data, selected_topic='All'):
     if selected_topic == 'All':
         pie_data = data.groupby('Topic')['Inquiries'].sum().reset_index()
@@ -69,26 +68,30 @@ def create_pie_chart(data, selected_topic='All'):
     })
 
 # Initialize data
-selected_topic, columns, bar_properties, data_topic_date, latest_values = initialize_case_evolution(data)
+selected_topic, columns, bar_properties, data_topic_date = initialize_case_evolution(data, selected_topic="All")
 pie_chart = create_pie_chart(data)
 card_values = {
-    "Attractions": latest_values.get("Attractions", 0),
-    "Dining": latest_values.get("Dining", 0),
-    "Shopping": latest_values.get("Shopping", 0)
+    "Attractions": data_topic_date.get("Attractions", 0),
+    "Dining": data_topic_date.get("Dining", 0),
+    "Shopping": data_topic_date.get("Shopping", 0)
 }
 
 def on_change_topic(state):
     print("Chosen topic: ", state.selected_topic)
-    state.selected_topic, state.columns, state.bar_properties, state.data_topic_date, state.latest_values = initialize_case_evolution(data, state.selected_topic)
+    state.selected_topic, state.columns, state.bar_properties, state.data_topic_date = initialize_case_evolution(data, state.selected_topic)
     state.pie_chart = create_pie_chart(data, state.selected_topic)
     convert_data_topic_date(state)
-    
+
     if not state.data_topic_date.empty:
         print("The DataFrame is correctly populated for the chart.")
     else:
         print("Error: The DataFrame is empty. Check data initialization.")
     
+    print("Updated DataFrame:")
+    print(state.data_topic_date.head())  # Check the content of the DataFrame
     print("Updated bar_properties:", state.bar_properties)
+   
+
 
 topic_md = Markdown("pages/topic/topic.md")
 
