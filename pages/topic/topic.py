@@ -32,7 +32,6 @@ def initialize_case_evolution(data, selected_topic='All'):
         "layout": {
             "barmode": "stack",
             "hovermode": "x",
-            "title": f"Tourists' Activities - {selected_topic}",
             "xaxis": {"title": "Date"},
             "yaxis": {"title": "Number of Inquiries"}
         }

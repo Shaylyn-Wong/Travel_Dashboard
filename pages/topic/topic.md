@@ -32,7 +32,7 @@ This page provides a view of the tourists' interests, with statistics on the num
 <|layout|columns=2 1|columns[mobile]=1|
 <|{data_topic_date}|chart|type=bar|properties={bar_properties}|rebuild|>
 
-<|{pie_chart}|chart|type=pie|values=values|labels=labels|title=Distribution among {selected_topic}|>
+<|{pie_chart}|chart|type=pie|values=values|labels=labels|>
 |>
  
 <br/>
