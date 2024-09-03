@@ -67,7 +67,7 @@ def create_pie_chart(data, selected_topic='All'):
 
 def on_change_topic(state):
     print("Chosen topic: ", state.selected_topic)
-    state.data_topic_date, state.bar_properties, state.columns, state.latest_values, state.selected_topic, chart_title = initialize_case_evolution(data, state.selected_topic)
+    state.data_topic_date, state.bar_properties, state.columns, state.latest_values, state.selected_topic, state.chart_title = initialize_case_evolution(data, state.selected_topic)
     state.pie_chart = create_pie_chart(data, state.selected_topic)
     
     # Update card values
