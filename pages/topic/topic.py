@@ -97,6 +97,6 @@ def on_change(state, var_name, var_value):
         state.bar_properties = generate_bar_properties(state.columns, state.selected_topic)
         if not isinstance(state.bar_properties, dict):
             print("Error: bar_properties is not a dictionary")
-      state.bar_properties = dict(state.bar_properties)
+        state.bar_properties = dict(state.bar_properties)
 topic_md = Markdown("pages/topic/topic.md")
 
