@@ -23,6 +23,11 @@ def initialize_case_evolution(data, selected_topic='All'):
         columns = data_topic_date.columns[1:].tolist()
         chart_title = f"Tourists' Activities - {selected_topic}"
 
+    # Check if the DataFrame is empty
+    if data_topic_date.empty:
+        print(f"Warning: No data available for topic '{selected_topic}'")
+        return pd.DataFrame(columns=['Date']), {}, [], {}, selected_topic, chart_title
+
     # Create the correct properties structure
     y_properties = {f"y[{i+1}]": col for i, col in enumerate(columns)}
     color_properties = {f"color[{i+1}]": f"rgba({(i*50)%255}, {(i*100)%255}, {(i*150)%255}, 0.7)" for i in range(len(columns))}
@@ -34,7 +39,7 @@ def initialize_case_evolution(data, selected_topic='All'):
         "layout": {
             "barmode": "stack",
             "hovermode": "x",
-            "title": chart_title,  # Use the dynamically set title
+            "title": chart_title,
             "xaxis": {"title": "Date"},
             "yaxis": {"title": "Number of Inquiries"}
         }
@@ -49,7 +54,7 @@ def initialize_case_evolution(data, selected_topic='All'):
     print(f"Data sample:\n{data_topic_date.head()}")
 
     # Get the latest values for each topic
-    latest_values = data_topic_date.iloc[-1].to_dict()
+    latest_values = data_topic_date.iloc[-1].to_dict() if not data_topic_date.empty else {}
     latest_values.pop('Date', None)  # Remove the 'Date' key if it exists
 
     return data_topic_date, bar_properties, columns, latest_values, selected_topic, chart_title
@@ -75,10 +80,18 @@ def on_change_topic(state):
     
     state.pie_chart["title"] = f"Distribution among {state.selected_topic}"
     
+    # Update card_values with available data
+    state.card_values = {
+        "Attractions": state.latest_values.get("Attractions", 0),
+        "Dining": state.latest_values.get("Dining", 0),
+        "Shopping": state.latest_values.get("Shopping", 0)
+    }
+    
     print("Updated bar_properties:", state.bar_properties)
     print("Updated pie_chart title:", state.pie_chart["title"])
     print("Updated data_topic_date shape:", state.data_topic_date.shape)
     print("Updated data_topic_date columns:", state.data_topic_date.columns)
+    print("Updated card_values:", state.card_values)
 
 def on_change(state, var_name, var_value):
     if var_name == "selected_topic":
