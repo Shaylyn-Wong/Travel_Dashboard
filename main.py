@@ -25,9 +25,14 @@ def menu_action(state, action, payload):
     navigate(state, page)
 
 
-if __name__ == '__main__':
+def initialize_state(state):
+    state.selected_topic, state.columns, state.bar_properties, state.data_topic_date, state.latest_values = initialize_case_evolution(data, selected_topic)
+    state.pie_chart = create_pie_chart(data, selected_topic)
     gui_multi_pages = Gui(pages=pages)
 
     tp.Core().run()
+    
+    # Initialize the state
+    initialize_state(gui_multi_pages.state)
     
     gui_multi_pages.run(title="Taipy Dashboard")
