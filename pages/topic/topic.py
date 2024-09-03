@@ -76,17 +76,17 @@ def on_change_topic(state):
     state.pie_chart = create_pie_chart(data, state.selected_topic)
     
     # Update bar chart title
-    if state.bar_properties:
+    if isinstance(state.bar_properties, dict) and "layout" in state.bar_properties:
         state.bar_properties["layout"]["title"] = state.chart_title
     
     # Update pie chart title
-    if state.pie_chart is not None:
+    if isinstance(state.pie_chart, pd.DataFrame) and not state.pie_chart.empty:
         state.pie_chart["title"] = f"Distribution among {state.selected_topic}"
     
     print("Updated bar_properties:", state.bar_properties)
-    print("Updated pie_chart title:", state.pie_chart["title"] if state.pie_chart else "No pie chart data")
-    print("Updated data_topic_date shape:", state.data_topic_date.shape)
-    print("Updated data_topic_date columns:", state.data_topic_date.columns)
+    print("Updated pie_chart title:", state.pie_chart.get("title", "No pie chart data") if isinstance(state.pie_chart, pd.DataFrame) else "No pie chart data")
+    print("Updated data_topic_date shape:", state.data_topic_date.shape if isinstance(state.data_topic_date, pd.DataFrame) else "No data")
+    print("Updated data_topic_date columns:", state.data_topic_date.columns.tolist() if isinstance(state.data_topic_date, pd.DataFrame) else "No data")
 
 def on_change(state, var_name, var_value):
     if var_name == "selected_topic":
