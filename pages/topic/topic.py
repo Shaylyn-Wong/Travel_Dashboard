@@ -80,18 +80,29 @@ def on_change_topic(state):
     
     state.pie_chart["title"] = f"Distribution among {state.selected_topic}"
     
-    # Update card_values with available data
-    state.card_values = {
-        "Attractions": state.latest_values.get("Attractions", 0),
-        "Dining": state.latest_values.get("Dining", 0),
-        "Shopping": state.latest_values.get("Shopping", 0)
-    }
+    # Update card_values based on the selected topic
+    if state.selected_topic == 'All':
+        state.card_values = {
+            "Attractions": state.latest_values.get("Attractions", 0),
+            "Dining": state.latest_values.get("Dining", 0),
+            "Shopping": state.latest_values.get("Shopping", 0)
+        }
+    else:
+        # Use all columns except 'Date' for the cards
+        columns = state.data_topic_date.columns[1:]
+        state.card_values = {
+            col: state.latest_values.get(col, 0) for col in columns
+        }
+    
+    # Update the number of cards
+    state.num_cards = len(state.card_values)
     
     print("Updated bar_properties:", state.bar_properties)
     print("Updated pie_chart title:", state.pie_chart["title"])
     print("Updated data_topic_date shape:", state.data_topic_date.shape)
     print("Updated data_topic_date columns:", state.data_topic_date.columns)
     print("Updated card_values:", state.card_values)
+    print("Number of cards:", state.num_cards)
 
 def on_change(state, var_name, var_value):
     if var_name == "selected_topic":
@@ -108,3 +119,4 @@ card_values = {
     "Dining": latest_values.get("Dining", 0),
     "Shopping": latest_values.get("Shopping", 0)
 }
+num_cards = len(card_values)

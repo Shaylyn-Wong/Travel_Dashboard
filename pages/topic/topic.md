@@ -10,21 +10,8 @@ This page provides a view of the tourists' interests, with statistics on the num
 
 <br/>
 
-<|layout|columns=3 3 3|gap=25px|columns[mobile]=1|
-<|card|
-**Attractions**{: .color-primary}
-<|{card_values["Attractions"]}|text|class_name=h3|>
-|>
-
-<|card|
-**Dining**{: .color-primary}
-<|{card_values["Dining"]}|text|class_name=h3|>
-|>
-
-<|card|
-**Shopping**{: .color-primary}
-<|{card_values["Shopping"]}|text|class_name=h3|>
-|>
+<|layout|columns={min(num_cards, 3)} {min(num_cards, 3)} {min(num_cards, 3)}|gap=25px|columns[mobile]=1|
+<|{card_values}|card|title=Key|value=Value|>
 |>
 
 <br/>
