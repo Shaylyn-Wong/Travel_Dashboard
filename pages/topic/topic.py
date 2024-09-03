@@ -57,6 +57,7 @@ def generate_bar_properties(columns, selected_topic):
     }
 
     print(f"Bar properties: {bar_properties}")
+    print(f"Type of bar_properties: {type(bar_properties)}")
     
     return bar_properties
 
@@ -90,7 +91,9 @@ def on_change_topic(state):
 
 def on_change(state, var_name, var_value):
     if var_name == "columns":
-      state.bar_properties = generate_bar_properties(state.columns, state.selected_topic)
+        state.bar_properties = generate_bar_properties(state.columns, state.selected_topic)
+        if not isinstance(state.bar_properties, dict):
+            print("Error: bar_properties is not a dictionary")
       state.bar_properties = dict(state.bar_properties)
 topic_md = Markdown("pages/topic/topic.md")
 
